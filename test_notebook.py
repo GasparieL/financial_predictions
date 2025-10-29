@@ -46,7 +46,9 @@ except Exception as e:
 print("\n" + "="*80)
 print("Testing Cell 6: Pivot spending data")
 try:
-    spending_pivot = spending_filtered.pivot(index='month', columns='vendor', values='cost').reset_index()
+    # Aggregate duplicate vendor-month entries by summing costs
+    spending_agg = spending_filtered.groupby(['month', 'vendor'], as_index=False)['cost'].sum()
+    spending_pivot = spending_agg.pivot(index='month', columns='vendor', values='cost').reset_index()
     spending_pivot.columns.name = None
     spending_pivot = spending_pivot.rename(columns={'month': 'date'})
 
